@@ -6,11 +6,11 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 20:59:40 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/01 22:22:39 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/02 16:30:26 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"philo.h"
+#include"../philo.h"
 
 int	long_negative_nb_error(char **av)
 {
@@ -25,14 +25,14 @@ int	long_negative_nb_error(char **av)
 		data = ft_atoi(output[i]);
 		if (data > 2147483647 || data < 0)
 		{
-			printf("Error\ninput must be a strictly positive integer\n");
+			printf("Error\ninput must be a strictly positive integers\n");
 			free_memory(output);
-			return (0);
+			return (1);
 		}
 		i++;
 	}
 	free_memory(output);
-	return (1);
+	return (0);
 }
 
 int	not_integer_error(char **av)
@@ -52,27 +52,23 @@ int	not_integer_error(char **av)
 		{
 			if (ft_isdigit(output[i][j]) == 0)
 			{
-				printf("Error\ninput must be a strictly positive integer\n");
+				printf("Error\ninput must be a strictly positive integers\n");
 				free_memory(output);
-				return (0);
+				return (1);
 			}
 			j++;
 		}
 		i++;
 	}
 	free_memory(output);
-	return (1);
+	return (0);
 }
 
-int main(int ac, char **av)
+int check_input_errors(char **av)
 {
-	if (ac < 5 || ac > 6)
-	{
-		printf("Error\ninvalid number of arguments\n");
-		return (0);
-	}
-	if (long_negative_nb_error(av) == 0)
-		return (0);
-	if (not_integer_error(av) == 0)
-		return (0);
+	if (long_negative_nb_error(av) == 1)
+		return (1);
+	else if (not_integer_error(av) == 1)
+		return (1);
+	return (0);
 }

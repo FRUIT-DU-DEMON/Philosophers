@@ -6,11 +6,11 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 20:45:30 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/01 17:08:33 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/02 01:31:22 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"philo.h"
+#include"../philo.h"
 
 int	len_of_input(char **av)
 {
