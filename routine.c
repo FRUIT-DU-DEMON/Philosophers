@@ -6,7 +6,7 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/02 01:37:59 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/03 02:51:44 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/03 22:15:48 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ t_philos_data *initialize_data(char **av)
 	id = 1;
 	ph_nb = ft_atoi(av[1]);
 	table = malloc(ph_nb * sizeof(t_philos_data));
-	while(ph_nb)
+	while(i < ph_nb)
 	{
 		table[i].ph_nb = ph_nb;
 		table[i].t_while_wating = ft_atoi(av[2]);
@@ -32,22 +32,22 @@ t_philos_data *initialize_data(char **av)
 		table[i].ph_id = id;
 		i++;
 		id++;
-		ph_nb--;
 	}
 	return(table);
 }
 
 void	*routine(void *ptr)
 {
-	t_philos_data philo;
+	t_philos_data *philo;
 
-	philo = *(t_philos_data *)ptr; 
+	philo = (t_philos_data *)ptr;
+	//sleep odd id 
 	while(1)
 	{
-		printf("%d has taken a fork\n", philo.ph_id);
-		printf("%d is eating\n", philo.ph_id);
-		printf("%d is sleeping\n", philo.ph_id);
-		printf("%d is thinking\n", philo.ph_id);
+		printf("%d has taken a fork\n", philo->ph_id);
+		printf("%d is eating\n", philo->ph_id);
+		printf("%d is sleeping\n", philo->ph_id);
+		printf("%d is thinking\n", philo->ph_id);
 	}
 	return (ptr);
 }
@@ -59,25 +59,17 @@ int	threading_philos(t_philos_data *table, char **av)
 
 	i = 0;
 	ph_nb = ft_atoi(av[1]);
-	table = malloc(ph_nb * sizeof(t_philos_data));
-	while(ph_nb)
+	while(i < ph_nb)
 	{
 		if (pthread_create(&table[i].philo, NULL, &routine, &table[i]) != 0)
 		{
 			printf("Error\npthread_create function has failed\n");
 			return (1);
 		}
-		// if (pthread_detach(table[i].philo) != 0)
-		// {
-		// 	printf("Error\npthread_detach function has failed\n");
-		// 	return (1);
-		// }
 		i++;
-		ph_nb--;
 	}
 	i = 0;
-	ph_nb = ft_atoi(av[1]);
-	while(ph_nb)
+	while(i < ph_nb)
 	{
 		if (pthread_detach(table[i].philo) != 0)
 		{
@@ -85,7 +77,6 @@ int	threading_philos(t_philos_data *table, char **av)
 			return (1);
 		}
 		i++;
-		ph_nb--;
 	}
 	return (0);
 }
@@ -103,6 +94,7 @@ int main(int ac, char **av)
 
 	table = initialize_data(av);
 	threading_philos(table, av);
+	sleep(100);
 }
 
 
