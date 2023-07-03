@@ -6,7 +6,7 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 20:46:13 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/02 18:03:45 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/02 22:14:49 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,13 @@
 
 typedef struct t_philos_data
 {
-    char **av;
-    int s_number;
+    pthread_t philo;
+    int ph_nb;
     int t_while_wating;
     int t_while_eating;
     int t_while_sleeping;
     int meals;
+    int ph_id;
 } t_philos_data;
 
 
