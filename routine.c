@@ -6,7 +6,7 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/02 01:37:59 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/04 19:03:25 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/04 23:01:12 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,17 @@ t_philo_data *initialize_data(char **av)
 	philo = malloc(ph_nb * sizeof(t_philo_data));
 	while(i < ph_nb)
 	{
+		philo[i].ph_id = id;
 		philo[i].ph_nb = ph_nb;
-		philo[i].t_while_wating = ft_atoi(av[2]);
+		philo[i].t_to_die = ft_atoi(av[2]);
 		philo[i].t_while_eating = ft_atoi(av[3]);
 		philo[i].t_while_sleeping = ft_atoi(av[4]);
 		if (av[5])
 			philo[i].total_meals = ft_atoi(av[5]);
 		else
 			philo[i].total_meals = -1;
-		philo[i].ph_id = id;
+		philo[i].meals_eaten = 0;
+		philo[i].last_meal_time = get_current_time();
 		philo[i].start_time = get_current_time();
 		i++;
 		id++;
@@ -66,29 +68,29 @@ void	*routine(void *ptr)
 
 	philo = (t_philo_data *)ptr;
 	if (philo->ph_id % 2 != 0)
-		usleep(100);
+		customized_usleep(philo->t_while_eating);
 	while(1)
 	{
 		pthread_mutex_lock(&philo->fork);
-		printf("\n **** %lld **** **** %d **** has taken a fork\n", (get_current_time() - philo->start_time), philo->ph_id);
-		printf("\n **** %lld **** **** %d **** eating\n", (get_current_time() - philo->start_time), philo->ph_id);
+		printf("\n timestamp = %lld id = %d has taken a fork\n", (get_current_time() - philo->start_time), philo->ph_id);
+		printf("\n timestamp = %lld id = %d eating\n", (get_current_time() - philo->start_time), philo->ph_id);
 		customized_usleep(philo->t_while_eating);
-		pthread_mutex_unlock(&philo->fork);
-		printf("\n **** %lld **** **** %d **** sleeping\n", (get_current_time() - philo->start_time), philo->ph_id);
+		philo->meals_eaten++;
+		philo->last_meal_time = get_current_time();
+		printf("\n timestamp = %lld id = %d sleeping\n", (get_current_time() - philo->start_time), philo->ph_id);
 		customized_usleep(philo->t_while_sleeping);
-		printf("\n **** %lld **** **** %d **** thinking\n", (get_current_time() - philo->start_time), philo->ph_id);
+		printf("\n timestamp = %lld id = %d thinking\n", (get_current_time() - philo->start_time), philo->ph_id);
+		pthread_mutex_unlock(&philo->fork);
 	}
 	return (ptr);
 }
 
-int	threading_philos(t_philo_data *table, char **av)
+int	threading_philos(t_philo_data *table)
 {
 	int i;
-	int ph_nb;
 
 	i = 0;
-	ph_nb = ft_atoi(av[1]);
-	while(i < ph_nb)
+	while(i < table->ph_nb)
 	{
 		pthread_mutex_init(&table[i].fork, NULL);
 		if (pthread_create(&table[i].philo, NULL, &routine, &table[i]) != 0)
@@ -99,7 +101,7 @@ int	threading_philos(t_philo_data *table, char **av)
 		i++;
 	}
 	i = 0;
-	while(i < ph_nb)
+	while(i < table->ph_nb)
 	{
 		pthread_mutex_destroy(&table[i].fork);
 		if (pthread_detach(table[i].philo) != 0)
@@ -107,11 +109,30 @@ int	threading_philos(t_philo_data *table, char **av)
 			printf("Error\npthread_detach function has failed\n");
 			return (1);
 		}
-		// pthread_mutex_destroy(&table[i].fork);
-		
 		i++;
 	}
 	return (0);
+}
+
+int	check_philo_death(t_philo_data *table)
+{
+	int i;
+
+	while (1)
+	{
+		i = 0;
+		while (i < table->ph_nb)
+		{
+			if (get_current_time() - table[i].last_meal_time > table->t_to_die)
+			{
+				printf("\n timestamp = %lld id = %d died\n", (get_current_time() - table[i].start_time), table[i].ph_id);
+				return (0);
+			}
+			if (table->total_meals != -1 && table[i].meals_eaten == table->total_meals)//increment a variable to check if it is equal to ph_nb
+			i++;
+		}
+	}
+	return (1);
 }
 
 int main(int ac, char **av)
@@ -126,6 +147,7 @@ int main(int ac, char **av)
 	t_philo_data *table;
 
 	table = initialize_data(av);
-	threading_philos(table, av);
-	sleep(100);
+	threading_philos(table);
+	if (check_philo_death(table) == 0)
+		return (0);
 }

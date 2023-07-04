@@ -6,7 +6,7 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 20:46:13 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/04 19:01:32 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/04 22:51:32 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,15 @@ typedef struct t_philo_data
 {
     pthread_t philo;
     pthread_mutex_t fork;
+    //pthread_mutex_t time_of_last_eat;
+    int ph_id;
     int ph_nb;
-    int t_while_wating;
+    int t_to_die;
     int t_while_eating;
     int t_while_sleeping;
     int total_meals;
-    int ph_id;
+    int meals_eaten;
+    long long last_meal_time;
     long long start_time;
 } t_philo_data;
 
