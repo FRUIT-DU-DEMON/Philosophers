@@ -6,11 +6,7 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/02 19:59:51 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/03 02:46:11 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/03 23:45:26 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include"philo.h"
-
-// //my own gettimeofday
-// //my own usleep

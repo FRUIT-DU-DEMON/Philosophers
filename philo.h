@@ -6,7 +6,7 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 20:46:13 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/03 21:49:24 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/04 19:01:32 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,18 @@
 #include<pthread.h>
 #include<sys/time.h>
 
-typedef struct t_philos_data
+typedef struct t_philo_data
 {
     pthread_t philo;
+    pthread_mutex_t fork;
     int ph_nb;
     int t_while_wating;
     int t_while_eating;
     int t_while_sleeping;
-    int meals;
+    int total_meals;
     int ph_id;
-} t_philos_data;
+    long long start_time;
+} t_philo_data;
 
 
 int     len_of_input(char **av);
@@ -47,6 +49,12 @@ int     check_input_errors(char **av);
 
 
 
+long long get_current_time(void);
+
+
+
+
+ 
 
 
 
