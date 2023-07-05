@@ -6,7 +6,7 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 20:46:13 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/04 22:51:32 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/05 01:24:09 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ typedef struct t_philo_data
     int ph_id;
     int ph_nb;
     int t_to_die;
-    int t_while_eating;
-    int t_while_sleeping;
+    int t_to_eat;
+    int t_to_sleep;
     int total_meals;
     int meals_eaten;
     long long last_meal_time;

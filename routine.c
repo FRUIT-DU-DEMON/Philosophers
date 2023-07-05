@@ -6,7 +6,7 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/02 01:37:59 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/04 23:01:12 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/05 01:47:32 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ t_philo_data *initialize_data(char **av)
 		philo[i].ph_id = id;
 		philo[i].ph_nb = ph_nb;
 		philo[i].t_to_die = ft_atoi(av[2]);
-		philo[i].t_while_eating = ft_atoi(av[3]);
-		philo[i].t_while_sleeping = ft_atoi(av[4]);
+		philo[i].t_to_eat = ft_atoi(av[3]);
+		philo[i].t_to_sleep = ft_atoi(av[4]);
 		if (av[5])
 			philo[i].total_meals = ft_atoi(av[5]);
 		else
@@ -68,17 +68,17 @@ void	*routine(void *ptr)
 
 	philo = (t_philo_data *)ptr;
 	if (philo->ph_id % 2 != 0)
-		customized_usleep(philo->t_while_eating);
+		customized_usleep(philo->t_to_eat);
 	while(1)
 	{
 		pthread_mutex_lock(&philo->fork);
 		printf("\n timestamp = %lld id = %d has taken a fork\n", (get_current_time() - philo->start_time), philo->ph_id);
 		printf("\n timestamp = %lld id = %d eating\n", (get_current_time() - philo->start_time), philo->ph_id);
-		customized_usleep(philo->t_while_eating);
+		customized_usleep(philo->t_to_eat);
 		philo->meals_eaten++;
 		philo->last_meal_time = get_current_time();
 		printf("\n timestamp = %lld id = %d sleeping\n", (get_current_time() - philo->start_time), philo->ph_id);
-		customized_usleep(philo->t_while_sleeping);
+		customized_usleep(philo->t_to_sleep);
 		printf("\n timestamp = %lld id = %d thinking\n", (get_current_time() - philo->start_time), philo->ph_id);
 		pthread_mutex_unlock(&philo->fork);
 	}
@@ -114,21 +114,31 @@ int	threading_philos(t_philo_data *table)
 	return (0);
 }
 
-int	check_philo_death(t_philo_data *table)
+int	check_philo_state(t_philo_data *table)
 {
 	int i;
+	int flag;
 
+	flag = 0;
 	while (1)
 	{
 		i = 0;
 		while (i < table->ph_nb)
 		{
-			if (get_current_time() - table[i].last_meal_time > table->t_to_die)
+			if (get_current_time() - table[i].last_meal_time >= table->t_to_die)
 			{
 				printf("\n timestamp = %lld id = %d died\n", (get_current_time() - table[i].start_time), table[i].ph_id);
 				return (0);
 			}
-			if (table->total_meals != -1 && table[i].meals_eaten == table->total_meals)//increment a variable to check if it is equal to ph_nb
+			if (table[i].meals_eaten == table->total_meals)
+			{
+				flag++;
+				if (flag == table->ph_nb)
+				{
+					printf("\nall philos got at least %d meals\n", table->total_meals);
+					return(table->total_meals);
+				}
+			}
 			i++;
 		}
 	}
@@ -148,6 +158,6 @@ int main(int ac, char **av)
 
 	table = initialize_data(av);
 	threading_philos(table);
-	if (check_philo_death(table) == 0)
+	if (check_philo_state(table) == 0 || check_philo_state(table) == table->total_meals)
 		return (0);
 }
