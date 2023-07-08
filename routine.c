@@ -6,7 +6,7 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/02 01:37:59 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/05 01:47:32 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/08 00:53:06 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,12 @@ void	*routine(void *ptr)
 	while(1)
 	{
 		pthread_mutex_lock(&philo->fork);
+		pthread_mutex_lock(&philo->next_fork);
+		pthread_mutex_lock(&philo->print);//!!
 		printf("\n timestamp = %lld id = %d has taken a fork\n", (get_current_time() - philo->start_time), philo->ph_id);
+		pthread_mutex_unlock(&philo->print);//!! for all the prints
+		pthread_mutex_lock(&philo->next_fork);
+		printf("\n timestamp = %lld id = %d has taken a fork 2\n", (get_current_time() - philo->start_time), philo->ph_id);
 		printf("\n timestamp = %lld id = %d eating\n", (get_current_time() - philo->start_time), philo->ph_id);
 		customized_usleep(philo->t_to_eat);
 		philo->meals_eaten++;
@@ -81,6 +86,7 @@ void	*routine(void *ptr)
 		customized_usleep(philo->t_to_sleep);
 		printf("\n timestamp = %lld id = %d thinking\n", (get_current_time() - philo->start_time), philo->ph_id);
 		pthread_mutex_unlock(&philo->fork);
+		pthread_mutex_unlock(&philo->next_fork);
 	}
 	return (ptr);
 }
@@ -90,9 +96,26 @@ int	threading_philos(t_philo_data *table)
 	int i;
 
 	i = 0;
+	pthread_mutex_init(&table->print, NULL);
 	while(i < table->ph_nb)
 	{
 		pthread_mutex_init(&table[i].fork, NULL);
+		i++;
+	}
+	i = 0;
+	while(i < table->ph_nb)
+	{
+		if (table[i].ph_id == table->ph_nb)
+		{
+			table[i].next_fork = table[0].fork;
+			break;
+		}
+		table[i].next_fork = table[i + 1].fork;
+		i++;
+	}
+	i = 0;
+	while(i < table->ph_nb)
+	{
 		if (pthread_create(&table[i].philo, NULL, &routine, &table[i]) != 0)
 		{
 			printf("Error\npthread_create function has failed\n");
@@ -101,6 +124,7 @@ int	threading_philos(t_philo_data *table)
 		i++;
 	}
 	i = 0;
+	pthread_mutex_destroy(table->print);
 	while(i < table->ph_nb)
 	{
 		pthread_mutex_destroy(&table[i].fork);
@@ -127,6 +151,7 @@ int	check_philo_state(t_philo_data *table)
 		{
 			if (get_current_time() - table[i].last_meal_time >= table->t_to_die)
 			{
+				// lock priint(, 0)
 				printf("\n timestamp = %lld id = %d died\n", (get_current_time() - table[i].start_time), table[i].ph_id);
 				return (0);
 			}
