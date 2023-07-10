@@ -6,7 +6,7 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 20:59:40 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/02 16:30:26 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/09 18:55:34 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	long_negative_nb_error(char **av)
 	while (output[i])
 	{
 		data = ft_atoi(output[i]);
-		if (data > 2147483647 || data < 0)
+		if (data > 2147483647 || data <= 0)
 		{
 			printf("Error\ninput must be a strictly positive integers\n");
 			free_memory(output);

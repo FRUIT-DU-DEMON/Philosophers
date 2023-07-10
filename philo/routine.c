@@ -6,7 +6,7 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/02 01:37:59 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/09 02:51:39 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/10 01:15:53 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,32 +68,46 @@ void	*routine(void *ptr)
 
 	philo = (t_philo_data *)ptr;
 	if (philo->ph_id % 2 != 0)
-		customized_usleep(philo->t_to_eat);
+		usleep(5);
 	while(1)
 	{
 		pthread_mutex_lock(&philo->fork);
+		
 		pthread_mutex_lock(&philo->routine_dispaly);
 		printf("\n timestamp = %lld id = %d has taken a fork\n", (get_current_time() - philo->start_time), philo->ph_id);
 		pthread_mutex_unlock(&philo->routine_dispaly);
+		
 		pthread_mutex_lock(&philo->next_fork);
+		
 		pthread_mutex_lock(&philo->routine_dispaly);
 		printf("\n timestamp = %lld id = %d has taken a fork 2\n", (get_current_time() - philo->start_time), philo->ph_id);
 		pthread_mutex_unlock(&philo->routine_dispaly);
+		
 		pthread_mutex_lock(&philo->routine_dispaly);
 		printf("\n timestamp = %lld id = %d eating\n", (get_current_time() - philo->start_time), philo->ph_id);
 		pthread_mutex_unlock(&philo->routine_dispaly);
 		customized_usleep(philo->t_to_eat);
+		
+		
+		pthread_mutex_lock(&philo->last_meal_time_update);
 		philo->meals_eaten++;
 		philo->last_meal_time = get_current_time();
+		pthread_mutex_unlock(&philo->last_meal_time_update);
+		
+		customized_usleep(philo->t_to_sleep);
+		
 		pthread_mutex_lock(&philo->routine_dispaly);
 		printf("\n timestamp = %lld id = %d sleeping\n", (get_current_time() - philo->start_time), philo->ph_id);
 		pthread_mutex_unlock(&philo->routine_dispaly);
-		customized_usleep(philo->t_to_sleep);
+		
+		
 		pthread_mutex_lock(&philo->routine_dispaly);
 		printf("\n timestamp = %lld id = %d thinking\n", (get_current_time() - philo->start_time), philo->ph_id);
 		pthread_mutex_unlock(&philo->routine_dispaly);
+		
 		pthread_mutex_unlock(&philo->fork);
 		pthread_mutex_unlock(&philo->next_fork);
+		
 	}
 	return (ptr);
 }
@@ -104,6 +118,7 @@ int	threading_philos(t_philo_data *table)
 
 	i = 0;
 	pthread_mutex_init(&table->routine_dispaly, NULL);
+	pthread_mutex_init(&table->last_meal_time_update, NULL);
 	while(i < table->ph_nb)
 	{
 		pthread_mutex_init(&table[i].fork, NULL);
@@ -132,6 +147,7 @@ int	threading_philos(t_philo_data *table)
 	}
 	i = 0;
 	pthread_mutex_destroy(&table->routine_dispaly);
+	pthread_mutex_destroy(&table->last_meal_time_update);
 	while(i < table->ph_nb)
 	{
 		pthread_mutex_destroy(&table[i].fork);
@@ -156,21 +172,27 @@ int	check_philo_state(t_philo_data *table)
 		i = 0;
 		while (i < table->ph_nb)
 		{
+			usleep(10);
+			pthread_mutex_lock(&table->last_meal_time_update);
 			if (get_current_time() - table[i].last_meal_time >= table->t_to_die)
 			{
 				pthread_mutex_lock(&table->routine_dispaly);
-				printf("\n timestamp = %lld id = %d died\n", (get_current_time() - table[i].start_time), table[i].ph_id);
+				printf("\n timestamp = %lld id = %d died!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n", (get_current_time() - table[i].start_time), table[i].ph_id);
 				return (0);
 			}
+			// pthread_mutex_unlock(&table->last_meal_time_update);
+			// pthread_mutex_lock(&table->last_meal_time_update);
 			if (table[i].meals_eaten == table->total_meals)
 			{
 				flag++;
 				if (flag == table->ph_nb)
 				{
+					
 					printf("\nall philos got at least %d meals\n", table->total_meals);
 					return(table->total_meals);
 				}
 			}
+			pthread_mutex_unlock(&table->last_meal_time_update);
 			i++;
 		}
 	}

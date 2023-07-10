@@ -6,7 +6,7 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 20:46:13 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/09 02:44:52 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/09 17:50:37 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ typedef struct t_philo_data
     pthread_mutex_t fork;
     pthread_mutex_t next_fork;
     pthread_mutex_t routine_dispaly;
-    //pthread_mutex_t time_of_last_eat;
+    pthread_mutex_t last_meal_time_update;
     int ph_id;
     int ph_nb;
     int t_to_die;
