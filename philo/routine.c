@@ -6,7 +6,7 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/02 01:37:59 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/11 01:46:54 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/11 17:09:51 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,16 +204,6 @@ int main(int ac, char **av)
 	threading_philos(table);
 	int state = check_philo_state(table);
 	if (state == 0 || state == table->total_meals)
-	{
-		int i = 0;
-		while(i < table->ph_nb)
-		{
-		// pthread_mutex_destroy(&table[i].routine_dispaly);
-		// pthread_mutex_destroy(&table[i].last_meal_time_update);
-		// pthread_mutex_destroy(&table[i].fork);
-		i++;
-		}	
 		return (0);
-	}
-	
+	return (0);
 }

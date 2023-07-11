@@ -6,16 +6,16 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/01 17:38:36 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/02 16:09:42 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/11 16:49:52 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include"../philo.h"
 
-int	ft_atoi(char *str)
+long	ft_atoi(char *str)
 {
 	int		i;
-	int		nb;
+	long		nb;
 	int		sign;
 
 	i = 0;
