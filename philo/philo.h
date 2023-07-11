@@ -6,7 +6,7 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 20:46:13 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/11 18:51:20 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/11 19:04:25 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ long long	get_current_time(void);
 void	customized_usleep(int sleep_duration);
 void	*routine(void *ptr);
 int	threading_philos(t_philo_data *table);
+void	initialize_mutexes(t_philo_data *table);
 int	check_philo_total_meals(t_philo_data *table);
 int	check_philo_state(t_philo_data *table);
 

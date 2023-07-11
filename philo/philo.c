@@ -6,7 +6,7 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/10 01:23:48 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/11 18:51:13 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/11 19:27:21 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ int main(int ac, char **av)
 	t_philo_data	*table;
 
 	table = initialize_data(av);
-	threading_philos(table);
+	if (threading_philos(table) == 1)
+        return (1);
 	check_philo_state(table);
 	return (0);
 }

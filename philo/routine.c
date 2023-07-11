@@ -6,7 +6,7 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/02 01:37:59 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/11 19:02:45 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/11 19:32:14 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,22 +89,28 @@ void	*routine(void *ptr)
 	return (ptr);
 }
 
-void	initialize_mutexes(t_philo_data *table)
+int	initialize_mutexes(t_philo_data *table)
 {
 	int i;
 	pthread_mutex_t *routine_dispaly;
 
 	i = 0;
 	routine_dispaly = malloc(sizeof(pthread_mutex_t));
+	if (!routine_dispaly)
+		return -1;
 	pthread_mutex_init(routine_dispaly, NULL);
 	while(i < table->ph_nb)
 	{
 		table[i].routine_dispaly = routine_dispaly;
-		pthread_mutex_init(&table[i].last_meal_time_update, NULL);
-		pthread_mutex_init(&table[i].meals_eaten_update, NULL);
-		pthread_mutex_init(&table[i].fork, NULL);
+		if (pthread_mutex_init(&table[i].last_meal_time_update, NULL) != 0)
+			return (-1);
+		if (pthread_mutex_init(&table[i].meals_eaten_update, NULL) != 0)
+			return (-1);
+		if (pthread_mutex_init(&table[i].fork, NULL) != 0)
+			return (-1);
 		i++;
 	}
+	return (0);
 }
 
 int	threading_philos(t_philo_data *table)
@@ -112,7 +118,8 @@ int	threading_philos(t_philo_data *table)
 	int i;
 
 	i = 0;
-	initialize_mutexes(table);
+	if (initialize_mutexes(table) == -1)
+		return(1);
 	while (i < table->ph_nb)
 	{
 		if (table[i].ph_id == table->ph_nb)
@@ -167,7 +174,7 @@ int	check_philo_total_meals(t_philo_data *table)
 	return (-1);
 }
 
-int	check_philo_death(t_philo_data *table)
+int	check_philo_state(t_philo_data *table)
 {
 	int	i;
 	int	flag;
