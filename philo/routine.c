@@ -6,7 +6,7 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/02 01:37:59 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/11 17:09:51 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/11 19:02:45 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,25 +40,6 @@ t_philo_data	*initialize_data(char **av)
 	return (philo);
 }
 
-long long	get_current_time(void)
-{
-	struct timeval	tv;
-	long long		current_time;
-	
-	gettimeofday(&tv, NULL);
-	current_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
-	return(current_time);
-}
-
-void	customized_usleep(int sleep_duration)
-{
-	long long	current_time;
-
-	current_time = get_current_time();
-	while (get_current_time() - current_time < sleep_duration)
-		usleep(sleep_duration);
-}
-
 void	*routine(void *ptr)
 {
 	t_philo_data	*philo;
@@ -80,6 +61,7 @@ void	*routine(void *ptr)
 		pthread_mutex_unlock(philo->routine_dispaly);
 		
 		customized_usleep(philo->t_to_eat);
+		// up eting
 		pthread_mutex_lock(&philo->last_meal_time_update);
 		philo->last_meal_time = get_current_time();
 		pthread_mutex_unlock(&philo->last_meal_time_update);
@@ -107,14 +89,14 @@ void	*routine(void *ptr)
 	return (ptr);
 }
 
-int	threading_philos(t_philo_data *table)
+void	initialize_mutexes(t_philo_data *table)
 {
 	int i;
+	pthread_mutex_t *routine_dispaly;
 
-	pthread_mutex_t *routine_dispaly = malloc(sizeof(pthread_mutex_t));
-	pthread_mutex_init(routine_dispaly, NULL);
-	
 	i = 0;
+	routine_dispaly = malloc(sizeof(pthread_mutex_t));
+	pthread_mutex_init(routine_dispaly, NULL);
 	while(i < table->ph_nb)
 	{
 		table[i].routine_dispaly = routine_dispaly;
@@ -123,7 +105,14 @@ int	threading_philos(t_philo_data *table)
 		pthread_mutex_init(&table[i].fork, NULL);
 		i++;
 	}
+}
+
+int	threading_philos(t_philo_data *table)
+{
+	int i;
+
 	i = 0;
+	initialize_mutexes(table);
 	while (i < table->ph_nb)
 	{
 		if (table[i].ph_id == table->ph_nb)
@@ -152,7 +141,33 @@ int	threading_philos(t_philo_data *table)
 	return (0);
 }
 
-int	check_philo_state(t_philo_data *table)
+int	check_philo_total_meals(t_philo_data *table)
+{
+	int	i;
+	int	flag;
+
+	flag = 0;
+	i = 0;
+	while (i < table->ph_nb)
+	{
+		usleep(100);
+		pthread_mutex_lock(&table[i].meals_eaten_update);
+		if (table[i].meals_eaten == table->total_meals)
+		{
+			flag++;
+			if (flag == table->ph_nb)
+			{
+				pthread_mutex_lock(table[i].routine_dispaly);
+				return(table->total_meals);
+			}
+		}
+		pthread_mutex_unlock(&table[i].meals_eaten_update);
+		i++;
+	}
+	return (-1);
+}
+
+int	check_philo_death(t_philo_data *table)
 {
 	int	i;
 	int	flag;
@@ -172,38 +187,10 @@ int	check_philo_state(t_philo_data *table)
 				return (0);
 			}
 			pthread_mutex_unlock(&table[i].last_meal_time_update);
-			pthread_mutex_lock(&table[i].meals_eaten_update);
-			if (table[i].meals_eaten == table->total_meals)
-			{
-				flag++;
-				if (flag == table->ph_nb)
-				{
-					printf("\nall philos got at least %d meals\n", table->total_meals);
-					return(table->total_meals);
-				}
-			}
-			pthread_mutex_unlock(&table[i].meals_eaten_update);
+			if (check_philo_total_meals(table) != -1)
+				return table->total_meals;
 			i++;
 		}
 	}
 	return (1);
-}
-
-int main(int ac, char **av)
-{
-	if (ac < 5 || ac > 6)
-	{
-		printf("Error\ninvalid number of arguments\n");
-		return (1);
-	}
-	if (check_input_errors(av) == 1)
-		return (1);
-	t_philo_data	*table;
-
-	table = initialize_data(av);
-	threading_philos(table);
-	int state = check_philo_state(table);
-	if (state == 0 || state == table->total_meals)
-		return (0);
-	return (0);
 }

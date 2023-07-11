@@ -6,14 +6,14 @@
 #    By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/10 00:44:43 by hlabouit          #+#    #+#              #
-#    Updated: 2023/07/10 01:23:40 by hlabouit         ###   ########.fr        #
+#    Updated: 2023/07/11 17:19:00 by hlabouit         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = 	philo
 SRCS =	$(addprefix parsing/, check_input.c parsing.c) \
 		$(addprefix useful_functions/, useful_functions1.c useful_functions2.c useful_functions3.c) \
-		lightweight_memory.c philo.c
+		lightweight_memory.c philo.c routine.c
 		
 OBJS = $(SRCS:.c=.o)
 CC =  cc
