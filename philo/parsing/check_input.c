@@ -6,7 +6,7 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 20:59:40 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/09 18:55:34 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/11 23:59:37 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int	not_integer_error(char **av)
 	return (0);
 }
 
-int check_input_errors(char **av)
+int	check_input_errors(char **av)
 {
 	if (long_negative_nb_error(av) == 1)
 		return (1);

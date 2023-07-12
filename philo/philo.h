@@ -6,7 +6,7 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 20:46:13 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/11 21:08:04 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/12 01:43:04 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,27 +38,27 @@ typedef struct t_philo_data
 	long long		start_time;
 }	t_philo_data;
 
-int			len_of_input(char **av);
-char		*join_input(char **av);
-char		**split_input(char **av);
-char		**ft_split(char *s, char c);
-char		*ft_strncpy(char *s1, char *s2, int n);
-int			ft_isdigit(int c);
-int			ft_strlen(char *s);
-long		ft_atoi(char *str);
-int			long_negative_nb_error(char **av);
-int			not_integer_error(char **av);
-int			check_input_errors(char **av);
+int				len_of_input(char **av);
+char			*join_input(char **av);
+char			**split_input(char **av);
+char			**ft_split(char *s, char c);
+char			*ft_strncpy(char *s1, char *s2, int n);
+int				ft_isdigit(int c);
+int				ft_strlen(char *s);
+long			ft_atoi(char *str);
+int				long_negative_nb_error(char **av);
+int				not_integer_error(char **av);
+int				check_input_errors(char **av);
 t_philo_data	*initialize_data(char **av);
-long long	get_current_time(void);
-void	customized_usleep(int sleep_duration);
-void	*routine(void *ptr);
-int	threading_philos(t_philo_data *table);
-int	initialize_mutexes(t_philo_data *table);
-int	check_philo_total_meals(t_philo_data *table);
-int	check_philo_state(t_philo_data *table);
+long long		get_current_time(void);
+void			customized_usleep(int sleep_duration);
+void			eating_process(t_philo_data	*philo);
+void			*routine(void *ptr);
+int				threading_philos(t_philo_data *table);
+int				initialize_mutexes(t_philo_data *table);
+void			initialize_forks(t_philo_data *table);
+int				check_philo_total_meals(t_philo_data *table);
+void			check_philo_state(t_philo_data *table);
+void			free_memory(char **output);
 
-
-
-void		free_memory(char **output);
 #endif

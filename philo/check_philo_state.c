@@ -6,7 +6,7 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/11 21:15:41 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/11 21:16:10 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/12 01:13:30 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	check_philo_total_meals(t_philo_data *table)
 	i = 0;
 	while (i < table->ph_nb)
 	{
-		usleep(100);
+		usleep(300);
 		pthread_mutex_lock(&table[i].meals_eaten_update);
 		if (table[i].meals_eaten == table->total_meals)
 		{
@@ -29,7 +29,7 @@ int	check_philo_total_meals(t_philo_data *table)
 			if (flag == table->ph_nb)
 			{
 				pthread_mutex_lock(table[i].routine_dispaly);
-				return(table->total_meals);
+				return (table->total_meals);
 			}
 		}
 		pthread_mutex_unlock(&table[i].meals_eaten_update);
@@ -38,7 +38,7 @@ int	check_philo_total_meals(t_philo_data *table)
 	return (-1);
 }
 
-int	check_philo_state(t_philo_data *table)
+void	check_philo_state(t_philo_data *table)
 {
 	int	i;
 	int	flag;
@@ -49,19 +49,19 @@ int	check_philo_state(t_philo_data *table)
 		i = 0;
 		while (i < table->ph_nb)
 		{
-			usleep(100);
+			usleep(300);
 			pthread_mutex_lock(&table[i].last_meal_time_update);
 			if (get_current_time() - table[i].last_meal_time >= table->t_to_die)
 			{
 				pthread_mutex_lock(table[i].routine_dispaly);
-				printf("%lld %d died\n", (get_current_time() - table[i].start_time), table[i].ph_id);
-				return (0);
+				printf("%lld %d died\n",
+					(get_current_time() - table[i].start_time), table[i].ph_id);
+				return ;
 			}
 			pthread_mutex_unlock(&table[i].last_meal_time_update);
 			if (check_philo_total_meals(table) != -1)
-				return table->total_meals;
+				return ;
 			i++;
 		}
 	}
-	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/01 17:38:36 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/11 16:49:52 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/12 00:00:22 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 long	ft_atoi(char *str)
 {
 	int		i;
-	long		nb;
+	long	nb;
 	int		sign;
 
 	i = 0;

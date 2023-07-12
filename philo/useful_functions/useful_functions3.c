@@ -6,7 +6,7 @@
 /*   By: hlabouit <hlabouit@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/02 19:59:51 by hlabouit          #+#    #+#             */
-/*   Updated: 2023/07/11 21:20:51 by hlabouit         ###   ########.fr       */
+/*   Updated: 2023/07/12 01:48:57 by hlabouit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@ t_philo_data	*initialize_data(char **av)
 	int				i;
 	int				ph_nb;
 
-	i = 0;
+	i = -1;
 	ph_nb = ft_atoi(av[1]);
 	table = malloc(ph_nb * sizeof(t_philo_data));
 	if (!table)
 		return (NULL);
-	while (i < ph_nb)
+	while (++i < ph_nb)
 	{
 		table[i].ph_id = i + 1;
 		table[i].ph_nb = ph_nb;
@@ -37,22 +37,38 @@ t_philo_data	*initialize_data(char **av)
 		table[i].meals_eaten = 0;
 		table[i].last_meal_time = get_current_time();
 		table[i].start_time = get_current_time();
-		i++;
 	}
 	return (table);
 }
 
+void	initialize_forks(t_philo_data *table)
+{
+	int	i;
+
+	i = 0;
+	while (i < table->ph_nb)
+	{
+		if (table[i].ph_id == table->ph_nb)
+		{
+			table[i].next_fork = &table[0].fork;
+			break ;
+		}
+		table[i].next_fork = &table[i + 1].fork;
+		i++;
+	}
+}
+
 int	initialize_mutexes(t_philo_data *table)
 {
-	int i;
-	pthread_mutex_t *routine_dispaly;
+	int				i;
+	pthread_mutex_t	*routine_dispaly;
 
 	i = 0;
 	routine_dispaly = malloc(sizeof(pthread_mutex_t));
 	if (!routine_dispaly)
-		return -1;
+		return (-1);
 	pthread_mutex_init(routine_dispaly, NULL);
-	while(i < table->ph_nb)
+	while (i < table->ph_nb)
 	{
 		table[i].routine_dispaly = routine_dispaly;
 		if (pthread_mutex_init(&table[i].last_meal_time_update, NULL) != 0)
@@ -66,15 +82,14 @@ int	initialize_mutexes(t_philo_data *table)
 	return (0);
 }
 
-
 long long	get_current_time(void)
 {
 	struct timeval	tv;
 	long long		current_time;
-	
+
 	gettimeofday(&tv, NULL);
 	current_time = (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
-	return(current_time);
+	return (current_time);
 }
 
 void	customized_usleep(int sleep_duration)
